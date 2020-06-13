@@ -3,8 +3,21 @@ from data.dataset import *
 from torch.utils.data import Dataset, DataLoader 
 from matplotlib import pyplot as plt 
 
+def compute_confusion(pred, label):
+    result = torch.zeros(2,2)
+    for i in range(len(pred)):
+        if(pred[i]==1 and label[i]==1):
+            result[0][0]+=1
+        elif(pred[i]==0 and label[i]==1):
+            result[0][1]+=1
+        elif(pred[i]==1 and label[i]==0):
+            result[1][0]+=1
+        elif(pred[i]==0 and label[i]==0):
+            result[1][1]+=1
+    return result
+
 data_root = "./data/dataset/"
-trainSet = EnergyData(root_dir=data_root, history_len=50, forecast_len=1, interval=2)
+trainSet = RTTData(root_dir=data_root, history_len=50, forecast_len=1, interval=2)
 trainLoader = DataLoader(dataset=trainSet, batch_size=16,shuffle=True)
 testLoader = DataLoader(dataset=trainSet, batch_size=16,shuffle=False)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
