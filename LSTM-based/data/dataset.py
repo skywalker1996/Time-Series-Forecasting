@@ -52,7 +52,7 @@ class RTTData(Dataset):
         self.forecast_len = forecast_len
         self.interval = interval
         train_df = pandas.read_csv(data_path)
-        self.raw_data = train_df.values[:,1]
+        self.raw_data = train_df['rtt'].values
        
         split_index = int(len(self.raw_data)*0.7)
 #         print('split_index is ',split_index)
@@ -82,10 +82,12 @@ class RTTData(Dataset):
             if((y_future[0]+y_future[1])/2 - x_data[-1] >=0.2):
                 y_cla = torch.tensor(1)
             else:
-                y_cla = torch.tensor(0)  
+                y_cla = torch.tensor(0) 
+                
+            # x_data size: (batch_size, history_len)
             return x_data, (y_reg, y_cla)
         else:
             return None
-    
+		
     def __len__(self):
         return self.len
